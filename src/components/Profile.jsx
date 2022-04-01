@@ -1,16 +1,7 @@
 import { useState, useEffect } from "react";
 import defaul_img from "./../assets/default_img.png";
 import { post, get, put } from "axios";
-import {
-  Button,
-  Container,
-  Col,
-  Row,
-  InputGroup,
-  Image,
-  MDBRow,
-  MDBCol,
-} from "react-bootstrap";
+import { Button, Container, Col, Row } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -31,6 +22,24 @@ const Profile = () => {
     getImg();
   }, []);
 
+
+
+  function sendMessage(error) {
+    const data = error.response.data;
+    let message = "";
+
+    for (const property in data) {
+      console.log(`${property}: ${data[property]}`);
+      message = message + " " + `${property}: ${data[property]}`;
+    }
+
+    MySwal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: message,
+    });
+  }
+
   const user = () => {
     get(
       "http://127.0.0.1:8000/api/Profile/v1/user/" +
@@ -39,7 +48,6 @@ const Profile = () => {
       {
         headers: {
           Authorization: `Bearer ` + localStorage.getItem("token"),
-          "Access-Control-Allow-Origin": "*",
         },
       }
     )
@@ -62,7 +70,6 @@ const Profile = () => {
       {
         headers: {
           Authorization: `Bearer ` + localStorage.getItem("token"),
-          "Access-Control-Allow-Origin": "*",
         },
       }
     )
@@ -90,7 +97,6 @@ const Profile = () => {
       {
         headers: {
           Authorization: `Bearer ` + localStorage.getItem("token"),
-          "Access-Control-Allow-Origin": "*",
         },
       }
     )
@@ -104,19 +110,7 @@ const Profile = () => {
         });
       })
       .catch(function (error) {
-        const data = error.response.data;
-        let message = "";
-
-        for (const property in data) {
-          console.log(`${property}: ${data[property]}`);
-          message = message + " " + `${property}: ${data[property]}`;
-        }
-
-        MySwal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: message,
-        });
+        sendMessage(error);
       });
   };
 
@@ -135,17 +129,17 @@ const Profile = () => {
   const SubmitImg = (event) => {
     console.log("evento", event);
     let data = new FormData();
-    data.append('name_img',event)
-    data.append('user',localStorage.getItem("user_id"))
+    data.append("name_img", event);
+    data.append("user", localStorage.getItem("user_id"));
     post(
       "http://127.0.0.1:8000/api/Profile/v1/profile/" +
         localStorage.getItem("user_id") +
         "/",
-        data,
+      data,
       {
         headers: {
           Authorization: `Bearer ` + localStorage.getItem("token"),
-          'Content-type':'multipart/form-data',
+          "Content-type": "multipart/form-data",
         },
       }
     )
@@ -159,19 +153,7 @@ const Profile = () => {
         });
       })
       .catch(function (error) {
-        const data = error.response.data;
-        let message = "";
-
-        for (const property in data) {
-          console.log(`${property}: ${data[property]}`);
-          message = message + " " + `${property}: ${data[property]}`;
-        }
-
-        MySwal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: message,
-        });
+        sendMessage(error);
       });
   };
 
